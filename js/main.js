@@ -61,4 +61,34 @@
     }, { rootMargin: '-30% 0px -60% 0px' });
     Object.keys(map).forEach(function (id) { var s = document.getElementById(id); if (s) spy.observe(s); });
   }
+
+  // Photo lightbox
+  var photoLinks = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox]'));
+  if (photoLinks.length && window.HTMLDialogElement) {
+    var dlg = document.createElement('dialog');
+    dlg.className = 'lightbox';
+    dlg.setAttribute('aria-label', '사진 크게 보기');
+    dlg.innerHTML = '<div class="lightbox-inner"><img alt=""><p class="lb-caption"></p>' +
+      '<button class="lb-prev" type="button" aria-label="이전 사진">&#8249;</button>' +
+      '<button class="lb-next" type="button" aria-label="다음 사진">&#8250;</button>' +
+      '<button class="lb-close" type="button" aria-label="닫기">&times;</button></div>';
+    document.body.appendChild(dlg);
+    var img = dlg.querySelector('img'), cap = dlg.querySelector('.lb-caption'), idx = 0;
+    var show = function (i) {
+      idx = (i + photoLinks.length) % photoLinks.length;
+      var a = photoLinks[idx], alt = a.querySelector('img').alt;
+      img.src = a.href; img.alt = alt; cap.textContent = alt + ' (' + (idx + 1) + '/' + photoLinks.length + ')';
+    };
+    photoLinks.forEach(function (a, i) {
+      a.addEventListener('click', function (e) { e.preventDefault(); show(i); dlg.showModal(); });
+    });
+    dlg.querySelector('.lb-prev').addEventListener('click', function () { show(idx - 1); });
+    dlg.querySelector('.lb-next').addEventListener('click', function () { show(idx + 1); });
+    dlg.querySelector('.lb-close').addEventListener('click', function () { dlg.close(); });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.classList.contains('lightbox-inner')) dlg.close(); });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') show(idx - 1);
+      if (e.key === 'ArrowRight') show(idx + 1);
+    });
+  }
 })();
