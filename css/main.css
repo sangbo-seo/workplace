@@ -419,3 +419,4 @@ td.hl { color: var(--brand); font-weight: 800; }
   .article .formula { font-size: 15px; padding: 14px 16px; }
   .article .lead { font-size: 17px; }
 }
+.article p a, .article li a { color: var(--brand); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
